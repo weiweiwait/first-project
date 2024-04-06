@@ -3,6 +3,7 @@ package middleware
 import (
 	"MyFirstProject/consts"
 	"MyFirstProject/pkg/e"
+	"MyFirstProject/pkg/utils/ctl"
 	util "MyFirstProject/pkg/utils/jwt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -51,9 +52,9 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 		SetToken(context, newAccessToken, newRefreshToken)
-		c.Request = context.Request.WithContext(ctl.NewContext(context.Request.Context(), &ctl.UserInfo{Id: claims.ID}))
-		ctl.InitUserInfo(c.Request.Context())
-		c.Next()
+		context.Request = context.Request.WithContext(ctl.NewContext(context.Request.Context(), &ctl.UserInfo{Id: claims.ID}))
+		ctl.InitUserInfo(context.Request.Context())
+		context.Next()
 	}
 }
 func SetToken(c *gin.Context, accessToken, refreshToken string) {
