@@ -2,6 +2,7 @@ package dao
 
 import (
 	"MyFirstProject/repository/db/model"
+	"MyFirstProject/types"
 	"context"
 	"gorm.io/gorm"
 )
