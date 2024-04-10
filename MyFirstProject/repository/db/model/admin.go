@@ -1,7 +1,7 @@
 package model
 
 import (
-	conf "MyFirstProject/config/sql"
+	conf "MyFirstProject/config"
 	"MyFirstProject/consts"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"

@@ -1,7 +1,7 @@
 package email
 
 import (
-	conf "MyFirstProject/config/sql"
+	conf "MyFirstProject/config"
 	"gopkg.in/mail.v2"
 )
 

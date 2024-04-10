@@ -1,7 +1,7 @@
 package model
 
 import (
-	conf "MyFirstProject/config/sql"
+	conf "MyFirstProject/config"
 	"MyFirstProject/consts"
 	"github.com/CocaineCong/secret"
 	"github.com/spf13/cast"

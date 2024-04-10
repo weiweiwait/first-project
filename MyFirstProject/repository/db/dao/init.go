@@ -1,7 +1,7 @@
 package dao
 
 import (
-	conf "MyFirstProject/config/sql"
+	conf "MyFirstProject/config"
 	"context"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"

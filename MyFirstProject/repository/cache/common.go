@@ -1,7 +1,7 @@
 package cache
 
 import (
-	conf "MyFirstProject/config/sql"
+	conf "MyFirstProject/config"
 	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"

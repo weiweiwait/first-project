@@ -1,4 +1,4 @@
-package sql
+package conf
 
 import (
 	"os"
