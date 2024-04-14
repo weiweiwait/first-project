@@ -12,8 +12,8 @@ mysql:
     dbHost: "127.0.0.1"
     dbPort: "3306"
     dbName: "mall_db"
-    userName: "mall"
-    password: "123456"
+    userName: "root"
+    password: "Fjw20030504"
     charset: "utf8mb4"
 
 kafka:
@@ -51,8 +51,8 @@ encryptSecret:
   phoneSecret: "PhoneSecret"
 
 oss:
-  AccessKeyId:
-  AccessKeySecret:
+  AccessKeyId: "ryyLZONP6ac6Puq50WM8fZOIlqtt5og8uxZf0WMC"
+  AccessKeySecret: "vWh0xBzhjFLWA3MFA1WuC-TT-t6W22AKxy-7-rcP"
   BucketName:
   QiNiuServer:
 

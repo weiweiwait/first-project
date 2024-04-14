@@ -2,9 +2,9 @@ package v1
 
 import (
 	"MyFirstProject/pkg/utils/ctl"
+	"MyFirstProject/pkg/utils/log"
+	"MyFirstProject/service"
 	"MyFirstProject/types"
-	"github.com/CocaineCong/gin-mall/pkg/utils/log"
-	"github.com/CocaineCong/gin-mall/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

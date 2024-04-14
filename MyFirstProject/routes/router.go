@@ -1,6 +1,7 @@
 package routes
 
 import (
+	api "MyFirstProject/api/v1"
 	"MyFirstProject/middleware"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -20,5 +21,11 @@ func NewRouter() *gin.Engine {
 			c.JSON(200, "success")
 		})
 
+		// 用户操作
+		//1.用户注册
+		v1.POST("user/register", api.UserRegisterHandler())
+		//2.用户登录
+		v1.POST("user/login", api.UserLoginHandler())
 	}
+	return r
 }
