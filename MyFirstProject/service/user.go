@@ -3,14 +3,18 @@ package service
 import (
 	conf "MyFirstProject/config"
 	"MyFirstProject/consts"
+	"MyFirstProject/pkg/email"
 	"MyFirstProject/pkg/utils/ctl"
 	"MyFirstProject/pkg/utils/jwt"
 	"MyFirstProject/pkg/utils/log"
+	util "MyFirstProject/pkg/utils/upload"
 	"MyFirstProject/repository/db/dao"
 	"MyFirstProject/repository/db/model"
 	"MyFirstProject/types"
 	"context"
 	"errors"
+	"fmt"
+	"mime/multipart"
 	"sync"
 )
 
@@ -137,10 +141,41 @@ func (s *UserSrv) UserInfoUpdate(ctx context.Context, req *types.UserInfoUpdateR
 
 //用户修改头像
 
-// func (s *UserSrv) UserAvatarUpload(ctx context.Context, file multipart.File,fileSize int64,req *types.UserServiceReq) (resp interface{}, err error){
-//
-// }
+func (s *UserSrv) UserAvatarUpload(ctx context.Context, file multipart.File, fileSize int64, req *types.UserServiceReq) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(ctx)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return nil, err
+	}
+	uId := u.Id
+	userDao := dao.NewUserDao(ctx)
+	user, err := userDao.GetUserById(uId)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return nil, err
+	}
+	var path string
+	if conf.Config.System.UploadModel == consts.UploadModelLocal { // 兼容两种存储方式
+		path, err = util.AvatarUploadToLocalStatic(file, uId, user.UserName)
+	} else {
+		path, err = util.UploadToQiNiu(file, fileSize)
+	}
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return nil, err
+	}
+	user.Avatar = path
+	err = userDao.UpdateUserById(uId, user)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return nil, err
+	}
+
+	return
+}
+
 // 用户信息展示
+
 func (s *UserSrv) UserInfoShow(ctx context.Context, req *types.UserInfoShowReq) (resp interface{}, err error) {
 	u, err := ctl.GetUserInfo(ctx)
 	if err != nil {
@@ -160,6 +195,31 @@ func (s *UserSrv) UserInfoShow(ctx context.Context, req *types.UserInfoShowReq) 
 		Status:   user.Status,
 		Avatar:   user.AvatarURL(),
 		CreateAt: user.CreatedAt.Unix(),
+	}
+
+	return
+}
+
+//发送邮件
+
+func (s *UserSrv) SendEmail(ctx context.Context, req *types.SendEmailServiceReq) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(ctx)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return nil, err
+	}
+	var address string
+	token, err := jwt.GenerateEmailToken(u.Id, req.OperationType, req.Email, req.Password)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return nil, err
+	}
+	sender := email.NewEmailSender()
+	address = conf.Config.Email.ValidEmail + token
+	mailText := fmt.Sprintf(consts.EmailOperationMap[req.OperationType], address)
+	if err = sender.Send(mailText, req.Email, "FanOneMall"); err != nil {
+		log.LogrusObj.Error(err)
+		return
 	}
 
 	return
