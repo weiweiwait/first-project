@@ -29,6 +29,10 @@ func NewRouter() *gin.Engine {
 		//商品操作
 		//1.轮播图
 		v1.GET("carousels", api.ListCarouselsHandler()) // 轮播图
+		//2.查看商品
+		v1.GET("product/list", api.ListProductsHandler())
+		//3.获取商品详情
+		v1.GET("product/show", api.ShowProductHandler())
 
 		authed := v1.Group("/") // 需要登陆保护
 		authed.Use(middleware.AuthMiddleware())
@@ -65,7 +69,9 @@ func NewRouter() *gin.Engine {
 			//商品操作
 			//1.增加商品
 			authed.POST("product/create", api.CreateProductHandler())
-			
+			//2.删除商品
+			authed.POST("product/delete", api.DeleteProductHandler())
+
 		}
 	}
 	return r
