@@ -119,3 +119,20 @@ func (s *AddressSrv) AddressUpdate(ctx context.Context, req *types.AddressServic
 
 	return
 }
+
+//删除地址
+
+func (s *AddressSrv) AddressDelete(ctx context.Context, req *types.AddressDeleteReq) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(ctx)
+	if err != nil {
+		util.LogrusObj.Error(err)
+		return nil, err
+	}
+	err = dao.NewAddressDao(ctx).DeleteAddressById(req.Id, u.Id)
+	if err != nil {
+		util.LogrusObj.Error(err)
+		return
+	}
+
+	return
+}

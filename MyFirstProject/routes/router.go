@@ -53,6 +53,12 @@ func NewRouter() *gin.Engine {
 			authed.POST("addresses/create", api.CreateAddressHandler())
 			//2.展示某个地址
 			authed.GET("addresses/show", api.ShowAddressHandler())
+			//3.展示所有地址
+			authed.GET("addresses/list", api.ListAddressHandler())
+			//4.修改收货地址
+			authed.POST("addresses/update", api.UpdateAddressHandler())
+			//5.删除收货地址
+			authed.POST("addresses/delete", api.DeleteAddressHandler())
 		}
 	}
 	return r

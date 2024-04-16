@@ -103,3 +103,28 @@ func UpdateAddressHandler() gin.HandlerFunc {
 		ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, resp))
 	}
 }
+
+//删除地址
+
+// 删除收货地址
+
+func DeleteAddressHandler() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req types.AddressDeleteReq
+		if err := ctx.ShouldBind(&req); err != nil {
+			// 参数校验
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+
+		l := service.GetAddressSrv()
+		resp, err := l.AddressDelete(ctx.Request.Context(), &req)
+		if err != nil {
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+		ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, resp))
+	}
+}
