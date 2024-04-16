@@ -26,22 +26,31 @@ func NewRouter() *gin.Engine {
 		v1.POST("user/register", api.UserRegisterHandler())
 		//2.用户登录
 		v1.POST("user/login", api.UserLoginHandler())
+		//商品操作
+		//1.轮播图
+		v1.GET("carousels", api.ListCarouselsHandler()) // 轮播图
 
 		authed := v1.Group("/") // 需要登陆保护
 		authed.Use(middleware.AuthMiddleware())
 		{
-			//用户信息修改
+			//用户操作
+			//1.用户信息修改
 			authed.POST("user/update", api.UserUpdateHandler())
-			//展示用户信息
+			//2.展示用户信息
 			authed.GET("user/show_info", api.ShowUserInfoHandler())
-			//用户修改头像
+			//3.用户上传头像
 			authed.POST("user/avatar", api.UploadAvatarHandler())
-			//发送验证码
+			//4.发送验证码
 			authed.POST("user/send_email", api.SendEmailHandler())
-			//取消关注
+			//5.取消关注
 			authed.POST("user/unfollowing", api.UserUnFollowingHandler())
-			//关注
+			//6.关注
 			authed.POST("user/following", api.UserFollowingHandler())
+			//7.邮箱验证
+			authed.GET("user/valid_email", api.ValidEmailHandler())
+			//收货地址操作
+			//1.增加地址
+			authed.POST("addresses/create", api.CreateAddressHandler())
 		}
 	}
 	return r
