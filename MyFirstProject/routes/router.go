@@ -38,6 +38,10 @@ func NewRouter() *gin.Engine {
 			authed.POST("user/avatar", api.UploadAvatarHandler())
 			//发送验证码
 			authed.POST("user/send_email", api.SendEmailHandler())
+			//取消关注
+			authed.POST("user/unfollowing", api.UserUnFollowingHandler())
+			//关注
+			authed.POST("user/following", api.UserFollowingHandler())
 		}
 	}
 	return r

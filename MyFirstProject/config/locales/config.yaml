@@ -41,9 +41,9 @@ cache:
 
 email:
   address: http://localhost:8080/#/vaild/email/
-  smtpHost:
-  smtpEmail:
-  smtpPass:
+  smtpHost: "smtp.163.com"
+  smtpEmail: "19891294013@163.com"
+  smtpPass: "DRCJMYFWIGGKGSWM"
 
 encryptSecret:
   jwtSecret: "FanOne666Secret"
