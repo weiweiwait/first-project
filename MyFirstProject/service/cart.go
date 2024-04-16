@@ -1,11 +1,13 @@
 package service
 
 import (
+	"MyFirstProject/pkg/e"
 	"MyFirstProject/pkg/utils/ctl"
 	util "MyFirstProject/pkg/utils/log"
 	"MyFirstProject/repository/db/dao"
 	"MyFirstProject/types"
 	"context"
+	"errors"
 	"sync"
 )
 
@@ -36,4 +38,12 @@ func (s *CartSrv) CartCreate(ctx context.Context, req *types.CartCreateReq) (res
 		util.LogrusObj.Error(err)
 		return
 	}
+	// 创建购物车
+	cartDao := dao.NewCartDao(ctx)
+	_, status, _ := cartDao.CreateCart(req.ProductId, u.Id, req.BossID)
+	if status == e.ErrorProductMoreCart {
+		err = errors.New(e.GetMsg(status))
+		return
+	}
+	return
 }
