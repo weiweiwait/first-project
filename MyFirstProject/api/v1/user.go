@@ -203,3 +203,25 @@ func UserUnFollowingHandler() gin.HandlerFunc {
 		ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, resp))
 	}
 }
+
+//邮箱验证
+
+func ValidEmailHandler() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req types.ValidEmailServiceReq
+		if err := ctx.ShouldBind(&req); err != nil {
+			//参数校验
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusBadRequest, ErrorResponse(ctx, err))
+			return
+		}
+		l := service.GetUserSrv()
+		resp, err := l.Valid(ctx.Request.Context(), &req)
+		if err != nil {
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusInternalServerError, ErrorResponse(ctx, err))
+			return
+		}
+		ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, resp))
+	}
+}

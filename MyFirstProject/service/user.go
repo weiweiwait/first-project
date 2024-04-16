@@ -243,3 +243,66 @@ func (s *UserSrv) UserUnFollow(ctx context.Context, req *types.UserUnFollowingRe
 
 	return
 }
+
+func (s *UserSrv) Valid(ctx context.Context, req *types.ValidEmailServiceReq) (resp interface{}, err error) {
+	var userId uint
+	var email string
+	var password string
+	var operationType uint
+	//验证token
+	if req.Token == "" {
+		err = errors.New("token不存在")
+		log.LogrusObj.Error(err)
+		return
+	}
+	claims, err := jwt.ParseEmailToken(req.Token)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return
+	} else {
+		userId = claims.UserID
+		email = claims.Email
+		password = claims.Password
+		operationType = claims.OperationType
+	}
+	// 获取该用户信息
+	userDao := dao.NewUserDao(ctx)
+	user, err := userDao.GetUserById(userId)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return
+	}
+
+	switch operationType {
+	case consts.EmailOperationBinding:
+		user.Email = email
+	case consts.EmailOperationNoBinding:
+		user.Email = ""
+	case consts.EmailOperationUpdatePassword:
+		err = user.SetPassword(password)
+		if err != nil {
+			err = errors.New("密码加密错误")
+			return
+		}
+	default:
+		return nil, errors.New("操作不符合")
+	}
+
+	err = userDao.UpdateUserById(userId, user)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return
+	}
+
+	resp = &types.UserInfoResp{
+		ID:       user.ID,
+		UserName: user.UserName,
+		NickName: user.NickName,
+		Email:    user.Email,
+		Status:   user.Status,
+		Avatar:   user.AvatarURL(),
+		CreateAt: user.CreatedAt.Unix(),
+	}
+
+	return
+}
