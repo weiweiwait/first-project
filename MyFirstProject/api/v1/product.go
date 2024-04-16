@@ -6,6 +6,7 @@ import (
 	"MyFirstProject/pkg/utils/log"
 	"MyFirstProject/service"
 	"MyFirstProject/types"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -98,6 +99,83 @@ func DeleteProductHandler() gin.HandlerFunc {
 
 		l := service.GetProductSrv()
 		resp, err := l.ProductDelete(ctx.Request.Context(), &req)
+		if err != nil {
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+		ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, resp))
+	}
+}
+
+// UpdateProductHandler 更新商品
+
+func UpdateProductHandler() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req types.ProductUpdateReq
+		if err := ctx.ShouldBind(&req); err != nil {
+			// 参数校验
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+
+		l := service.GetProductSrv()
+		resp, err := l.ProductUpdate(ctx.Request.Context(), &req)
+		if err != nil {
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+		ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, resp))
+	}
+}
+
+// SearchProductsHandler 搜索商品
+
+func SearchProductsHandler() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req types.ProductSearchReq
+		if err := ctx.ShouldBind(&req); err != nil {
+			// 参数校验
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+		if req.PageSize == 0 {
+			req.PageSize = consts.BasePageSize
+		}
+
+		l := service.GetProductSrv()
+		resp, err := l.ProductSearch(ctx.Request.Context(), &req)
+		if err != nil {
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+		ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, resp))
+	}
+}
+
+//获取商品图像列表
+
+func ListProductImgHandler() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req types.ListProductImgReq
+		if err := ctx.ShouldBind(&req); err != nil {
+			// 参数校验
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+		if req.ID == 0 {
+			err := errors.New("参数错误,id不能为空")
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+
+		l := service.GetProductSrv()
+		resp, err := l.ProductImgList(ctx.Request.Context(), &req)
 		if err != nil {
 			log.LogrusObj.Infoln(err)
 			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
