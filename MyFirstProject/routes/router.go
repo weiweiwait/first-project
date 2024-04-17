@@ -70,6 +70,12 @@ func NewRouter() *gin.Engine {
 			//购物车
 			//1.增加购物车
 			authed.POST("addresses/create", api.CreateAddressHandler())
+			//2.查看购物车
+			authed.GET("carts/list", api.ListCartHandler())
+			//3.修改购物车
+			authed.POST("carts/update", api.UpdateCartHandler()) // 购物车id
+			//4.删除购物车
+			authed.POST("carts/delete", api.DeleteCartHandler())
 			//商品操作
 			//1.增加商品
 			authed.POST("product/create", api.CreateProductHandler())
