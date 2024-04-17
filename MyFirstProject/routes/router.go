@@ -69,7 +69,7 @@ func NewRouter() *gin.Engine {
 			authed.POST("addresses/delete", api.DeleteAddressHandler())
 			//购物车
 			//1.增加购物车
-			authed.POST("addresses/create", api.CreateAddressHandler())
+			authed.POST("carts/create", api.CreateCartHandler())
 			//2.查看购物车
 			authed.GET("carts/list", api.ListCartHandler())
 			//3.修改购物车
@@ -83,6 +83,8 @@ func NewRouter() *gin.Engine {
 			authed.POST("product/delete", api.DeleteProductHandler())
 			//3.更新商品
 			authed.POST("product/update", api.UpdateProductHandler())
+			//4.商品分类
+			v1.GET("category/list", api.ListCategoryHandler())
 			//收藏夹
 			//1.创建收藏夹
 			authed.POST("favorites/create", api.CreateFavoriteHandler())
@@ -90,7 +92,9 @@ func NewRouter() *gin.Engine {
 			authed.GET("favorites/list", api.ListFavoritesHandler())
 			//3.删除收藏夹
 			authed.POST("favorites/delete", api.DeleteFavoriteHandler())
-
+			//金额
+			//1.显示金额
+			authed.POST("money", api.ShowMoneyHandler())
 		}
 	}
 	return r
