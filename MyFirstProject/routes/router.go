@@ -107,7 +107,16 @@ func NewRouter() *gin.Engine {
 			//支付功能
 			//1.支付
 			authed.POST("paydown", api.OrderPaymentHandler())
-			
+			//秒杀
+			//1.秒杀初始化
+			authed.POST("skill_product/init", api.InitSkillProductHandler())
+			//2.秒杀商品列表展示
+			authed.GET("skill_product/list", api.ListSkillProductHandler())
+			//3.秒杀商品详情
+			authed.GET("skill_product/show", api.GetSkillProductHandler())
+			//4.秒杀
+			authed.POST("skill_product/skill", api.SkillProductHandler())
+
 		}
 	}
 	return r
