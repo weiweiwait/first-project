@@ -93,6 +93,7 @@ func (s *UserSrv) UserLogin(ctx context.Context, req *types.UserServiceReq) (res
 		return nil, errors.New("账号/密码不正确")
 	}
 	accessToken, refreshToken, err := jwt.GenerateToken(user.ID, req.UserName)
+	println(user.ID)
 	if err != nil {
 		log.LogrusObj.Error(err)
 		return nil, err
@@ -208,6 +209,7 @@ func (s *UserSrv) SendEmail(ctx context.Context, req *types.SendEmailServiceReq)
 		log.LogrusObj.Error(err)
 		return nil, err
 	}
+	println(u.Id)
 	var address string
 	token, err := jwt.GenerateEmailToken(u.Id, req.OperationType, req.Email, req.Password)
 	if err != nil {

@@ -95,6 +95,11 @@ func NewRouter() *gin.Engine {
 			//金额
 			//1.显示金额
 			authed.POST("money", api.ShowMoneyHandler())
+			//订单操作
+			//1.添加订单
+			authed.POST("orders/create", api.CreateOrderHandler())
+			//2.查看订单列表
+			authed.GET("orders/list", api.ListOrdersHandler())
 		}
 	}
 	return r

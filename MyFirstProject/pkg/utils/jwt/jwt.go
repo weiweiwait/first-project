@@ -19,32 +19,33 @@ type Claims struct {
 func GenerateToken(id uint, username string) (accessToken, refreshToken string, err error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(consts.AccessTokenExpireDuration)
-	rtExoireTime := nowTime.Add(consts.RefreshTokenExpireDuration)
-	claims := Claims{
+	rtExpireTime := nowTime.Add(consts.RefreshTokenExpireDuration)
+	claims := &Claims{
 		ID:       id,
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
-			Issuer:    "mail",
+			Issuer:    "mall",
 		},
 	}
-	//加密并获得完整的编码后的字符串token
+	// 加密并获得完整的编码后的字符串token
 	accessToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtSecret)
 	if err != nil {
 		return "", "", err
 	}
 
 	refreshToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		ExpiresAt: rtExoireTime.Unix(),
-		Issuer:    "mail",
+		ExpiresAt: rtExpireTime.Unix(),
+		Issuer:    "mall",
 	}).SignedString(jwtSecret)
 	if err != nil {
 		return "", "", err
 	}
+
 	return accessToken, refreshToken, err
 }
 
-// ParseToken 验证用户token，返回一个claim对象
+// ParseToken 验证用户token
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
@@ -68,13 +69,18 @@ func ParseRefreshToken(aToken, rToken string) (newAToken, newRToken string, err 
 	if err != nil {
 		return
 	}
+
 	if accessClaim.ExpiresAt > time.Now().Unix() {
-		//如果 access_token没有过期，每一次请求都刷新refresh_token 和 access_token
+		// 如果 access_token 没过期,每一次请求都刷新 refresh_token 和 access_token
 		return GenerateToken(accessClaim.ID, accessClaim.Username)
 	}
+
 	if refreshClaim.ExpiresAt > time.Now().Unix() {
-		//如果 access_token 过期了，但是 refresh_token 没过期，刷新二者
-	} //如果两个都过期
+		// 如果 access_token 过期了,但是 refresh_token 没过期, 刷新 refresh_token 和 access_token
+		return GenerateToken(accessClaim.ID, accessClaim.Username)
+	}
+
+	// 如果两者都过期了,重新登陆
 	return "", "", errors.New("身份过期，重新登陆")
 }
 

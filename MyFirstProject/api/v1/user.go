@@ -140,7 +140,6 @@ func UploadAvatarHandler() gin.HandlerFunc {
 func SendEmailHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req types.SendEmailServiceReq
-
 		if err := ctx.ShouldBind(&req); err != nil {
 			//参数校验
 			log.LogrusObj.Infoln(err)

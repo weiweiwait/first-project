@@ -3,6 +3,7 @@ package es
 import (
 	conf "MyFirstProject/config"
 	"fmt"
+
 	"github.com/CocaineCong/eslogrus"
 	elastic "github.com/elastic/go-elasticsearch"
 	"github.com/sirupsen/logrus"

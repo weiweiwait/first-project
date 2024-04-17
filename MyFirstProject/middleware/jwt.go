@@ -40,7 +40,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			context.Abort()
 			return
 		}
-		claims, err := util.ParseToken(newRefreshToken)
+		claims, err := util.ParseToken(accessToken)
 		if err != nil {
 			code = e.ErrorAuthCheckTokenFail
 			context.JSON(http.StatusOK, gin.H{
@@ -51,6 +51,9 @@ func AuthMiddleware() gin.HandlerFunc {
 			context.Abort()
 			return
 		}
+		println(newRefreshToken)
+		println(claims.ID)
+		println(claims.Username)
 		SetToken(context, newAccessToken, newRefreshToken)
 		context.Request = context.Request.WithContext(ctl.NewContext(context.Request.Context(), &ctl.UserInfo{Id: claims.ID}))
 		ctl.InitUserInfo(context.Request.Context())

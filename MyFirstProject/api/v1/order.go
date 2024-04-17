@@ -1,0 +1,62 @@
+package v1
+
+import (
+	"MyFirstProject/consts"
+	"MyFirstProject/pkg/utils/ctl"
+	"MyFirstProject/pkg/utils/log"
+	"MyFirstProject/service"
+	"MyFirstProject/types"
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
+
+//创建订单
+
+func CreateOrderHandler() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req types.OrderCreateReq
+		if err := ctx.ShouldBind(&req); err != nil {
+			// 参数校验
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+
+		l := service.GetOrderSrv()
+		resp, err := l.OrderCreate(ctx.Request.Context(), &req)
+		if err != nil {
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+		ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, resp))
+		return
+	}
+}
+
+//查看所有订单
+
+func ListOrdersHandler() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req types.OrderListReq
+		if err := ctx.ShouldBind(&req); err != nil {
+			// 参数校验
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+		if req.PageSize == 0 {
+			req.PageSize = consts.BasePageSize
+		}
+
+		l := service.GetOrderSrv()
+		resp, err := l.OrderList(ctx.Request.Context(), &req)
+		if err != nil {
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusOK, ErrorResponse(ctx, err))
+			return
+		}
+		ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, resp))
+		return
+	}
+}
