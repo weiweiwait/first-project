@@ -104,6 +104,10 @@ func NewRouter() *gin.Engine {
 			authed.GET("orders/show", api.ShowOrderHandler())
 			//4.删除订单
 			authed.POST("orders/delete", api.DeleteOrderHandler())
+			//支付功能
+			//1.支付
+			authed.POST("paydown", api.OrderPaymentHandler())
+			
 		}
 	}
 	return r
