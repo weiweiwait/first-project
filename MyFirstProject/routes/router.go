@@ -100,6 +100,10 @@ func NewRouter() *gin.Engine {
 			authed.POST("orders/create", api.CreateOrderHandler())
 			//2.查看订单列表
 			authed.GET("orders/list", api.ListOrdersHandler())
+			//3.查看订单详情
+			authed.GET("orders/show", api.ShowOrderHandler())
+			//4.删除订单
+			authed.POST("orders/delete", api.DeleteOrderHandler())
 		}
 	}
 	return r

@@ -103,3 +103,42 @@ func (s *OrderSrv) OrderList(ctx context.Context, req *types.OrderListReq) (resp
 
 	return
 }
+
+// 订单详情
+
+func (s *OrderSrv) OrderShow(ctx context.Context, req *types.OrderShowReq) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(ctx)
+	if err != nil {
+		util.LogrusObj.Error(err)
+		return nil, err
+	}
+	order, err := dao.NewOrderDao(ctx).ShowOrderById(req.OrderId, u.Id)
+	if err != nil {
+		util.LogrusObj.Error(err)
+		return
+	}
+	if conf.Config.System.UploadModel == consts.UploadModelLocal {
+		order.ImgPath = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.ProductPath + order.ImgPath
+	}
+
+	resp = order
+
+	return
+}
+
+//取消订单
+
+func (s *OrderSrv) OrderDelete(ctx context.Context, req *types.OrderDeleteReq) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(ctx)
+	if err != nil {
+		util.LogrusObj.Error(err)
+		return
+	}
+	err = dao.NewOrderDao(ctx).DeleteOrderById(req.OrderId, u.Id)
+	if err != nil {
+		util.LogrusObj.Error(err)
+		return
+	}
+
+	return
+}
